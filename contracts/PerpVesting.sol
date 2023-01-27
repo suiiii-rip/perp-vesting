@@ -39,7 +39,7 @@ contract PerpVesting {
   uint public startedAt;
   uint public lastClaimAt;
 
-  IERC20 public token;
+  address public immutable token;
 
   using SafeERC20 for IERC20;
 
@@ -47,7 +47,7 @@ contract PerpVesting {
               uint _periodLength, uint _lockedPeriods,
               uint _periodAmount) {
 
-    token = IERC20(_token);
+    token = _token;
     sender = msg.sender;
     receiver = _receiver;
 
@@ -71,7 +71,7 @@ contract PerpVesting {
     depositedAmount += _amount;
     depositedAllTime += _amount;
 
-    token.safeTransferFrom(msg.sender, address(this), _amount);
+    IERC20(token).safeTransferFrom(msg.sender, address(this), _amount);
 
     emit Deposited(msg.sender, _amount);
   }
@@ -87,7 +87,7 @@ contract PerpVesting {
       require(depositedAmount >= _amount, "Not enough funds");
       depositedAmount -= _amount;
 
-      token.safeTransfer(sender, _amount);
+      IERC20(token).safeTransfer(sender, _amount);
       emit Withdrawn(msg.sender, _amount);
       return _amount;
     }
@@ -107,7 +107,7 @@ contract PerpVesting {
     require(maxWithdraw >= _amount, "Insufficient unlocked funds available");
 
     depositedAmount -= _amount;
-    token.safeTransfer(sender, _amount);
+    IERC20(token).safeTransfer(sender, _amount);
 
     emit Withdrawn(msg.sender, _amount);
     return _amount;
@@ -140,7 +140,7 @@ contract PerpVesting {
     claimedAllTime += claimable_;
     depositedAmount -= claimable_;
 
-    token.safeTransfer(receiver, claimable_);
+    IERC20(token).safeTransfer(receiver, claimable_);
     emit Claimed(msg.sender, claimable_);
     return claimable_;
   }
