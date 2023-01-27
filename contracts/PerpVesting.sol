@@ -25,22 +25,21 @@ contract PerpVesting {
     uint amount
   );
 
+  address public immutable sender;
+  address public immutable receiver;
+
+  uint public immutable periodLength;
+  uint public immutable lockedPeriods;
+  uint public immutable periodAmount;
+
   uint public depositedAmount;
   uint public depositedAllTime;
   uint public claimedAllTime;
-
-  // TODO immutable?
-  uint public periodLength;
-  uint public lockedPeriods;
-  uint public periodAmount;
 
   uint public startedAt;
   uint public lastClaimAt;
 
   IERC20 public token;
-
-  address public sender;
-  address public receiver;
 
   using SafeERC20 for IERC20;
 
